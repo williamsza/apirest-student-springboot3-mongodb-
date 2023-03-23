@@ -5,5 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import br.com.dev.students.entity.Student;
 
 public interface Repository extends MongoRepository<Student, String>{
+
+    Student findByRegistration(String registration);
     
 }

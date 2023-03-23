@@ -1,7 +1,12 @@
 package br.com.dev.students.controller;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.dev.students.entity.Student;
 import br.com.dev.students.service.StudentSevice;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,59 +21,78 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
-    private final List<Student> studentList = new ArrayList<>();
-    private final StudentSevice service;
+    @Autowired
+    private final StudentSevice studentService;
+
+    public StudentController(StudentSevice studentService) {
+        this.studentService = studentService;
+    }
+
+    public StudentSevice getStudentService() {
+        return studentService;
+    }
 
     @GetMapping
     public List<Student> getAll() {
-        Student student = new Student();
-        return studentList;
-
-    }
-
-    @GetMapping("/{registration}")
-    public Student searchStudentbyRegistration(@PathVariable String registration) {
-        for (Student student : studentList) {
-            if (student.getRegistration() == registration) {
-                return student;
-
-            }
-
-        }
-        // return studentList.get(id);
-        return null;
+        return studentService.getAll();
 
     }
 
     @PostMapping
-    public void insertStudent(@RequestBody Student student) {
-        studentList.add(student);
+    public ResponseEntity<Student> insertStudent(@RequestBody Student student) {
+        studentService.insertStudent(student);
+        return ResponseEntity.created(null).body(student);
 
     }
 
-    
     @PutMapping("/{registration}")
-    public void updateStudent(@RequestBody Student studentData, @PathVariable String registration) {
-        for (Student student : studentList) {
-            if (student.getRegistration() == registration) {
-                student.setNome(studentData.getNome());
-                student.setCpf(studentData.getCpf());
-                student.setRegistration(studentData.getRegistration());
-                student.setSobrenome(studentData.getSobrenome());
-                
-            }
-            
+    public ResponseEntity<Student> updateStudent(@RequestBody Student studentData, @PathVariable String registration) {
+        Student student = studentService.updateStudent(registration, studentData);
+
+        if (student == null) {
+            return ResponseEntity.notFound().build();
         }
-        
+
+        studentService.updateStudent(registration, studentData);
+        return ResponseEntity.ok().body(student);
+
     }
-    @PostMapping("/save")
-    public Student save(@RequestBody Student student) {
-        service.save(student);
-        return student;
+
+    @PatchMapping("/{registration}")
+    public ResponseEntity<Student> updateStudentCpf(@RequestParam("cpf") String cpf,
+            @PathVariable String registration) {
+
+        Student student = studentService.selectedStudentForRegistration(registration);
+
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        student.setCpf(cpf);
+        studentService.updateStudent(registration, student);
+        return ResponseEntity.ok().body(student);
+
     }
-    
+
+    @DeleteMapping("/{registration}")
+    public ResponseEntity<Student> deletar(@PathVariable String registration) {
+        Student student = studentService.selectedStudentForRegistration(registration);
+
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        studentService.remuveStudent(registration);
+        return ResponseEntity.ok().body(null);
+
+    }
+    // Remover
+    // @PostMapping("/save")
+    // public Student save(@RequestBody Student student) {
+    // studentService.save(student);
+    // return student;
+    // }
+
 }
