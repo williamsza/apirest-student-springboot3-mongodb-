@@ -6,6 +6,8 @@ import br.com.dev.students.entity.Student;
 
 public interface Repository extends MongoRepository<Student, String>{
 
-    Student findByRegistration(String registration);
+   // Student findByRegistration(String registration);
+
+    public Student findByRegistration(String registration);
     
 }

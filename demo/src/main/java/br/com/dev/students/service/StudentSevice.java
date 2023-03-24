@@ -1,24 +1,23 @@
 package br.com.dev.students.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import br.com.dev.students.entity.Student;
 import br.com.dev.students.repository.Repository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-// @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Service
 public class StudentSevice {
-    //private final List<Student> studentList = new ArrayList<>();
 
     @Autowired
     private Repository studentRepository;
@@ -34,43 +33,33 @@ public class StudentSevice {
 
     }
 
-    public Student updateStudent(String registration, Student studentData) {
-        Student student = selectedStudentForRegistration(registration);
-        if (student != null) {
-            BeanUtils.copyProperties(studentData, student);
-            studentRepository.save(student);
+    public Student updateStudent(String id, Student studentData) {
+        Optional<Student> student = findById(id);
+        if (student.isPresent()) {
+            Student newStudent = student.get();
 
+            // newStudent.setNome(newStudent.getNome());
+            // newStudent.setSobrenome(newStudent.getSobrenome());
+            // newStudent.setCpf(newStudent.getCpf());
+
+            BeanUtils.copyProperties(studentData, newStudent);
+            studentRepository.save(newStudent);
+
+            return newStudent;
         }
-
-        return student;
-
-    }
-
-    public void remuveStudent(String registration) {
-        Student student = selectedStudentForRegistration(registration);
-        if (student != null) {
-            studentRepository.delete(student);
-
-        }
+        return null;
 
     }
 
-    public Student selectedStudentForRegistration(String registration) {
-        final Student student = studentRepository.findByRegistration(registration);
+    public void remuve(String id) {
+        Optional<Student> student = findById(id);
+        student.ifPresent(value -> studentRepository.delete(student.get()));
 
-        return student;
     }
 
-    // public void save(Student student) {
-    // studentRepository.save(student);
-    // }
+    public Optional<Student> findById(String id) {
+        return studentRepository.findById(id);
 
-    // public void updateStudent(Student student) {
-    // studentRepository.save(student);
-    // }
-
-    // public void deleteById(String student) {
-    // studentRepository.deleteById(student);
-    // }
+    }
 
 }

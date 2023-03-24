@@ -1,35 +1,30 @@
 package br.com.dev.students.controller;
 
-import org.springframework.beans.BeanUtils;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import br.com.dev.students.entity.Student;
 import br.com.dev.students.service.StudentSevice;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PutMapping;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
     @Autowired
-    private final StudentSevice studentService;
-
-    public StudentController(StudentSevice studentService) {
-        this.studentService = studentService;
-    }
+    private StudentSevice studentService;
 
     public StudentSevice getStudentService() {
         return studentService;
@@ -42,57 +37,65 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> insertStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> insertStudent(@RequestBody @Valid Student student) {
         studentService.insertStudent(student);
         return ResponseEntity.created(null).body(student);
 
     }
 
-    @PutMapping("/{registration}")
-    public ResponseEntity<Student> updateStudent(@RequestBody Student studentData, @PathVariable String registration) {
-        Student student = studentService.updateStudent(registration, studentData);
+    @PutMapping("/{id}")
+    public ResponseEntity<Student> updateStudent(@RequestBody Student studentData, @PathVariable String id) {
+        Optional<Student> student = studentService.findById(id);
 
-        if (student == null) {
+        if (student.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        studentService.updateStudent(registration, studentData);
-        return ResponseEntity.ok().body(student);
+        studentService.updateStudent(id, studentData);
+        return ResponseEntity.ok().body(studentData);
 
     }
 
-    @PatchMapping("/{registration}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Student> updateStudentCpf(@RequestParam("cpf") String cpf,
-            @PathVariable String registration) {
+            @PathVariable String id) {
 
-        Student student = studentService.selectedStudentForRegistration(registration);
+        Optional<Student> student = studentService.findById(id);
 
-        if (student == null) {
+        if (student.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        Student studentData = student.get();
 
-        student.setCpf(cpf);
-        studentService.updateStudent(registration, student);
-        return ResponseEntity.ok().body(student);
+        studentData.setCpf(cpf);
+
+        studentService.updateStudent(id, studentData);
+        return ResponseEntity.ok().body(studentData);
 
     }
 
-    @DeleteMapping("/{registration}")
-    public ResponseEntity<Student> deletar(@PathVariable String registration) {
-        Student student = studentService.selectedStudentForRegistration(registration);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Student> deletar(@PathVariable String id) {
+        Optional<Student> student = studentService.findById(id);
 
-        if (student == null) {
+        if (student.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        studentService.remuveStudent(registration);
+        studentService.remuve(id);
         return ResponseEntity.ok().body(null);
 
     }
-    // Remover
-    // @PostMapping("/save")
-    // public Student save(@RequestBody Student student) {
-    // studentService.save(student);
-    // return student;
-    // }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Student> getStudentById(@PathVariable String id) {
+
+        Optional<Student> student = studentService.findById(id);
+
+        if (student.isEmpty()) {
+
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(student.get());
+    }
 
 }
