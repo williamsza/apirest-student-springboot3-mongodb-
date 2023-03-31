@@ -24,6 +24,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/student")
 public class StudentController {
     @Autowired
+
     private StudentSevice studentService;
 
     public StudentSevice getStudentService() {
@@ -56,6 +57,7 @@ public class StudentController {
 
     }
 
+    // ok
     @PatchMapping("/{id}")
     public ResponseEntity<Student> updateStudentCpf(@RequestParam("cpf") String cpf,
             @PathVariable String id) {

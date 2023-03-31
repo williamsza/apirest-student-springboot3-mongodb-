@@ -38,11 +38,11 @@ public class StudentSevice {
         if (student.isPresent()) {
             Student newStudent = student.get();
 
-            // newStudent.setNome(newStudent.getNome());
-            // newStudent.setSobrenome(newStudent.getSobrenome());
-            // newStudent.setCpf(newStudent.getCpf());
+            newStudent.setNome(newStudent.getNome());
+            newStudent.setSobrenome(newStudent.getSobrenome());
+            newStudent.setCpf(newStudent.getCpf());
 
-            BeanUtils.copyProperties(studentData, newStudent);
+           // BeanUtils.copyProperties(studentData, newStudent);
             studentRepository.save(newStudent);
 
             return newStudent;
@@ -57,6 +57,7 @@ public class StudentSevice {
 
     }
 
+    // OK
     public Optional<Student> findById(String id) {
         return studentRepository.findById(id);
 

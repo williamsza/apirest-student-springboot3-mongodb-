@@ -1,8 +1,8 @@
-package br.com.dev.students.entitynotfoundexception;
+// package br.com.dev.students.entitynotfoundexception;
 
-public class EntityNotFoundException {
+// public class EntityNotFoundException extends Exception{
 
-    public EntityNotFoundException(String string) {
-    }
+//     public EntityNotFoundException(String string) {
+//     }
 
-}
+// }
