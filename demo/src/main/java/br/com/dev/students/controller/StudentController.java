@@ -52,7 +52,9 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
 
-        studentService.updateStudent(id, studentData);
+        Student responseStudent = studentService.updateStudent(id, studentData);
+
+       // studentService.updateStudent(id, studentData);
         return ResponseEntity.ok().body(studentData);
 
     }

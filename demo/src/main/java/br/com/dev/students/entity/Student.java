@@ -1,5 +1,7 @@
 package br.com.dev.students.entity;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,4 +24,5 @@ public class Student {
     private String nome;
     private String sobrenome;
     private String cpf;
+    private List<Nota> notas;
 }

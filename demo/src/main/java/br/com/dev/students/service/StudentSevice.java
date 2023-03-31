@@ -38,11 +38,15 @@ public class StudentSevice {
         if (student.isPresent()) {
             Student newStudent = student.get();
 
-            newStudent.setNome(newStudent.getNome());
-            newStudent.setSobrenome(newStudent.getSobrenome());
-            newStudent.setCpf(newStudent.getCpf());
+            newStudent.setNome(studentData.getNome());
+            newStudent.setSobrenome(studentData.getSobrenome());
+            newStudent.setCpf(studentData.getCpf());
 
-           // BeanUtils.copyProperties(studentData, newStudent);
+            // newStudent.setNome(newStudent.getNome());
+            // newStudent.setSobrenome(newStudent.getSobrenome());
+            // newStudent.setCpf(newStudent.getCpf());
+
+            // BeanUtils.copyProperties(studentData, newStudent);
             studentRepository.save(newStudent);
 
             return newStudent;
