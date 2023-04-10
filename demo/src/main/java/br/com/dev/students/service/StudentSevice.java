@@ -7,8 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.dev.students.entity.Student;
 import br.com.dev.students.repository.Repository;
+import br.com.dev.students.studentsnodels.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,17 +22,20 @@ public class StudentSevice {
     @Autowired
     private Repository studentRepository;
 
+    
     public List<Student> getAll() {
         return studentRepository.findAll();
 
     }
 
+    
     public Student insertStudent(Student student) {
         studentRepository.insert(student);
         return student;
 
     }
 
+    
     public Student updateStudent(String id, Student studentData) {
         Optional<Student> student = findById(id);
         if (student.isPresent()) {
@@ -41,12 +44,9 @@ public class StudentSevice {
             newStudent.setNome(studentData.getNome());
             newStudent.setSobrenome(studentData.getSobrenome());
             newStudent.setCpf(studentData.getCpf());
+             newStudent.setNoteId(studentData.getNoteId());
+             newStudent.setMaterialId(studentData.getMaterialId());
 
-            // newStudent.setNome(newStudent.getNome());
-            // newStudent.setSobrenome(newStudent.getSobrenome());
-            // newStudent.setCpf(newStudent.getCpf());
-
-            // BeanUtils.copyProperties(studentData, newStudent);
             studentRepository.save(newStudent);
 
             return newStudent;
@@ -55,13 +55,14 @@ public class StudentSevice {
 
     }
 
+    
+
     public void remuve(String id) {
         Optional<Student> student = findById(id);
         student.ifPresent(value -> studentRepository.delete(student.get()));
 
     }
 
-    // OK
     public Optional<Student> findById(String id) {
         return studentRepository.findById(id);
 

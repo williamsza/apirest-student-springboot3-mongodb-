@@ -3,8 +3,10 @@ package br.com.dev.students.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,16 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.dev.students.entity.Student;
 import br.com.dev.students.service.StudentSevice;
+import br.com.dev.students.studentsnodels.Student;
 import jakarta.validation.Valid;
 
 @RestController
+// @CrossOrigin
 @RequestMapping("/api/student")
 public class StudentController {
     @Autowired
 
     private StudentSevice studentService;
+    //@Autowired
+    //private ModelMapper modelMapper;
 
     public StudentSevice getStudentService() {
         return studentService;
@@ -54,12 +59,10 @@ public class StudentController {
 
         Student responseStudent = studentService.updateStudent(id, studentData);
 
-       // studentService.updateStudent(id, studentData);
         return ResponseEntity.ok().body(studentData);
 
     }
 
-    // ok
     @PatchMapping("/{id}")
     public ResponseEntity<Student> updateStudentCpf(@RequestParam("cpf") String cpf,
             @PathVariable String id) {
