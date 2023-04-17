@@ -7,8 +7,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.dev.students.entity.Student;
-import br.com.dev.students.repository.Repository;
+import br.com.dev.students.model.Student;
+import br.com.dev.students.repository.MaterialsRepository;
+import br.com.dev.students.repository.NoteRepository;
+import br.com.dev.students.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,53 +20,52 @@ import lombok.Setter;
 @Setter
 @Service
 public class StudentSevice {
+    private final StudentRepository studentRepository;
 
-    @Autowired
-    private Repository studentRepository;
-
+    // public StudentSevice(StudentRepository studentRepository) {
+    //     this.studentRepository = studentRepository;
+    // }
+    
     public List<Student> getAll() {
         return studentRepository.findAll();
-
     }
-
+    
     public Student insertStudent(Student student) {
-        studentRepository.insert(student);
-        return student;
-
+        return studentRepository.insert(student);
     }
-
+    
     public Student updateStudent(String id, Student studentData) {
         Optional<Student> student = findById(id);
+    
         if (student.isPresent()) {
-            Student newStudent = student.get();
-
-            newStudent.setNome(studentData.getNome());
-            newStudent.setSobrenome(studentData.getSobrenome());
-            newStudent.setCpf(studentData.getCpf());
-
-            // newStudent.setNome(newStudent.getNome());
-            // newStudent.setSobrenome(newStudent.getSobrenome());
-            // newStudent.setCpf(newStudent.getCpf());
-
-            // BeanUtils.copyProperties(studentData, newStudent);
-            studentRepository.save(newStudent);
-
-            return newStudent;
+            Student existingStudent = student.get();
+            existingStudent.setNome(studentData.getNome());
+            existingStudent.setSobrenome(studentData.getSobrenome());
+            existingStudent.setCpf(studentData.getCpf());
+            studentRepository.save(existingStudent);
+            return existingStudent;
         }
+    
         return null;
-
     }
-
-    public void remuve(String id) {
+    
+    public void remove(String id) {
         Optional<Student> student = findById(id);
-        student.ifPresent(value -> studentRepository.delete(student.get()));
-
+    
+        student.ifPresent(value -> studentRepository.delete(value));
     }
-
-    // OK
+    
     public Optional<Student> findById(String id) {
         return studentRepository.findById(id);
-
     }
-
+    
 }
+
+
+
+
+
+
+
+
+

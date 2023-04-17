@@ -1,7 +1,8 @@
-package br.com.dev.students.entity;
+package br.com.dev.students.model;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,14 +16,21 @@ import lombok.NoArgsConstructor;
 @Document(collection = "databases_students")
 public class Student {
 
-    // @NotNull
-    // @min(value = 1,messege"Esse campo aceita apenas valores maiores que 1")
     @Id
     private String id;
-    //private String registration;
-    // @NotBlank
     private String nome;
     private String sobrenome;
     private String cpf;
-    private List<Nota> notas;
+
+    private List<ObjectId> noteId;
+    private List<ObjectId> materials;
+	public List<ObjectId> getMaterials() {
+		return materials;
+	}
+	public void setMaterials(List<ObjectId> materials) {
+		this.materials = materials;
+	}
+
+   
+    // getters e setters
 }

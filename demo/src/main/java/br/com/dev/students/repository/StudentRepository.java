@@ -2,9 +2,9 @@ package br.com.dev.students.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import br.com.dev.students.entity.Student;
+import br.com.dev.students.model.Student;
 
-public interface Repository extends MongoRepository<Student, String>{
+public interface StudentRepository extends MongoRepository<Student, String>{
 
    // Student findByRegistration(String registration);
 

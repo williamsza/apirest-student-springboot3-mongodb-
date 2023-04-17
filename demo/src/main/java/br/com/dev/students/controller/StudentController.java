@@ -16,32 +16,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.dev.students.entity.Student;
+import br.com.dev.students.model.Student;
 import br.com.dev.students.service.StudentSevice;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
-    @Autowired
 
+    @Autowired
     private StudentSevice studentService;
 
-    public StudentSevice getStudentService() {
-        return studentService;
-    }
-
     @GetMapping
-    public List<Student> getAll() {
-        return studentService.getAll();
-
+    public ResponseEntity<List<Student>> getAll() {
+        List<Student> students = studentService.getAll();
+        return ResponseEntity.ok().body(students);
     }
 
     @PostMapping
     public ResponseEntity<Student> insertStudent(@RequestBody @Valid Student student) {
         studentService.insertStudent(student);
         return ResponseEntity.created(null).body(student);
-
     }
 
     @PutMapping("/{id}")
@@ -52,54 +47,45 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
 
-        Student responseStudent = studentService.updateStudent(id, studentData);
-
-       // studentService.updateStudent(id, studentData);
-        return ResponseEntity.ok().body(studentData);
-
+        Student updatedStudent = studentService.updateStudent(id, studentData);
+        return ResponseEntity.ok().body(updatedStudent);
     }
 
-    // ok
     @PatchMapping("/{id}")
-    public ResponseEntity<Student> updateStudentCpf(@RequestParam("cpf") String cpf,
-            @PathVariable String id) {
-
+    public ResponseEntity<Student> updateStudentCpf(@RequestParam("cpf") String cpf, @PathVariable String id) {
         Optional<Student> student = studentService.findById(id);
 
         if (student.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
         Student studentData = student.get();
-
         studentData.setCpf(cpf);
+        Student updatedStudent = studentService.updateStudent(id, studentData);
 
-        studentService.updateStudent(id, studentData);
-        return ResponseEntity.ok().body(studentData);
-
+        return ResponseEntity.ok().body(updatedStudent);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deletar(@PathVariable String id) {
+    public ResponseEntity<Void> deletar(@PathVariable String id) {
         Optional<Student> student = studentService.findById(id);
 
         if (student.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        studentService.remuve(id);
-        return ResponseEntity.ok().body(null);
 
+        studentService.remove(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable String id) {
-
         Optional<Student> student = studentService.findById(id);
 
         if (student.isEmpty()) {
-
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok().body(student.get());
     }
-
 }
