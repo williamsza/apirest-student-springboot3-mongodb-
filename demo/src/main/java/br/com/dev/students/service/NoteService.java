@@ -2,7 +2,6 @@ package br.com.dev.students.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.dev.students.model.Note;
@@ -42,10 +41,6 @@ public class NoteService {
         return noteRepository.save(existingNote);
     }
 
-    public void deleteById(String id) {
-        noteRepository.deleteById(id);
-    }
-
     public Note addNote(Note note) {
         return null;
     }
@@ -55,6 +50,7 @@ public class NoteService {
     }
 
     public boolean deleteNoteById(String id) {
+        noteRepository.deleteById(id);
         return false;
     }
 }

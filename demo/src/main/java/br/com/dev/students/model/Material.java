@@ -1,9 +1,8 @@
 package br.com.dev.students.model;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Unwrapped.Empty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,13 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 @Document(collection = "databases_students")
-public class Materials {
+public class Material {
     @Id
+    private String materialId;
     private String id;
-    private String idMaterials;
-    private String name;
-    private String Description;
+    
+    private String materialName;
+    private String description;
 
-    // getters e setters
+    @DBRef
+    private Student student;
+
 
 }

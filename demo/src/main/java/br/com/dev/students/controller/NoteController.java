@@ -69,4 +69,3 @@ public class NoteController {
         return ResponseEntity.noContent().build();
     }
 }
-
